@@ -1,0 +1,539 @@
+<!DOCTYPE html> 
+
+<html lang="fr"> 
+
+<head> 
+
+<meta charset="UTF-8"> 
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+<title>Portail Judiciaire - Bruxelles Life RP</title> 
+
+<style> 
+
+:root{--navy:#0f2a4a;--navy2:#1b3a5f;--gold:#c9a227;--bg:#f4f6f9;--card:#fff;--txt:#222;--muted:#666;--red:#c0392b;--green:#27ae60;--orange:#e67e22} 
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,'Times New Roman',serif} 
+
+body{background:var(--bg);color:var(--txt)} 
+
+header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:24px 32px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center} 
+
+header h1{font-size:26px;letter-spacing:1px} 
+
+header .sub{color:var(--gold);font-size:13px;font-style:italic;margin-top:4px} 
+
+.hbtns button{background:var(--gold);border:none;color:var(--navy);padding:8px 14px;margin-left:6px;cursor:pointer;font-weight:bold;border-radius:4px} 
+
+nav{background:var(--navy2);display:flex;flex-wrap:wrap;padding:0 16px} 
+
+nav button{background:none;border:none;color:#cdd8e4;padding:14px 18px;cursor:pointer;font-size:15px;font-family:Georgia,serif;border-bottom:3px solid transparent} 
+
+nav button.active{color:#fff;border-bottom-color:var(--gold);font-weight:bold} 
+
+main{max-width:1150px;margin:24px auto;padding:0 16px} 
+
+.disclaimer{background:#fff8e1;border:1px solid #e6d27a;color:#7a6516;padding:8px 14px;border-radius:6px;font-size:13px;margin-bottom:18px} 
+
+h2{color:var(--navy);border-bottom:2px solid var(--gold);padding-bottom:6px;margin-bottom:16px} 
+
+.stats{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:20px} 
+
+.stat{flex:1;min-width:150px;background:var(--card);border-left:4px solid var(--gold);padding:16px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.08)} 
+
+.stat .n{font-size:30px;color:var(--navy);font-weight:bold} 
+
+.stat .l{color:var(--muted);font-size:13px} 
+
+.card{background:var(--card);border-radius:8px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid var(--navy)} 
+
+.card h3{color:var(--navy);margin-bottom:8px} 
+
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;color:#fff;margin-right:6px} 
+
+.b-penal{background:var(--red)}.b-civil{background:#2980b9}.b-routier{background:var(--orange)}.b-commercial{background:#8e44ad}.b-autre{background:#7f8c8d} 
+
+.phase{font-size:12px;padding:2px 8px;border-radius:4px;background:#eef3f8;color:var(--navy);font-weight:bold} 
+
+.meta{color:var(--muted);font-size:13px;margin-top:6px} 
+
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0} 
+
+.row input,.row select,.row textarea{padding:8px;border:1px solid #ccc;border-radius:4px;flex:1;min-width:140px;font-family:Georgia,serif} 
+
+button.add{background:var(--navy);color:#fff;border:none;padding:9px 18px;border-radius:4px;cursor:pointer} 
+
+button.del{background:none;border:1px solid var(--red);color:var(--red);padding:2px 10px;border-radius:4px;cursor:pointer;font-size:12px;float:right} 
+
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)} 
+
+th{background:var(--navy);color:#fff;padding:10px;text-align:left;font-size:14px} 
+
+td{padding:10px;border-bottom:1px solid #e5e9ef;font-size:14px} 
+
+tr.today td{background:#fff4f2} 
+
+.article{background:var(--card);border-radius:6px;padding:12px 16px;margin-bottom:10px;border-left:4px solid var(--gold)} 
+
+.article b{color:var(--navy)} 
+
+.search{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;margin-bottom:14px;font-size:15px} 
+
+.past{opacity:.45} 
+
+footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 0} 
+
+.hidden{display:none} 
+
+@media(max-width:700px){nav button{padding:10px 8px;font-size:13px}} 
+
+</style> 
+
+</head> 
+
+<body> 
+
+<header> 
+
+  <div><h1>&#9878;&#65039; Portail Judiciaire &mdash; Bruxelles Life RP</h1> 
+
+  <div class="sub">Corps judiciaire &bull; Univers fictif &mdash; serveur FiveM Bruxelles Life RP</div></div> 
+
+  <div class="hbtns"><button onclick="exportJSON()">&#11015; Export JSON</button> 
+
+  <button onclick="document.getElementById('importFile').click()">&#11014; Import JSON</button> 
+
+  <input type="file" id="importFile" accept=".json" class="hidden" onchange="importJSON(event)"></div> 
+
+</header> 
+
+<nav id="nav"> 
+
+  <button data-tab="accueil" class="active">&#127968; Accueil</button> 
+
+  <button data-tab="lois">&#128220; Codes &amp; Lois</button> 
+
+  <button data-tab="affaires">&#128193; Affaires en cours</button> 
+
+  <button data-tab="absences">&#128683; Absences</button> 
+
+  <button data-tab="agenda">&#128197; Agenda &amp; Proc&egrave;s</button> 
+
+  <button data-tab="annuaire">&#128101; Annuaire</button> 
+
+</nav> 
+
+<main> 
+
+<div class="disclaimer">&#9888;&#65039; Ce portail est une simulation de roleplay : toutes les lois, affaires et personnes list&eacute;es appartiennent &agrave; l'univers fictif de Bruxelles Life RP.</div> 
+
+ 
+
+<section id="tab-accueil"> 
+
+  <h2>Tableau de bord</h2> 
+
+  <div class="stats"> 
+
+    <div class="stat"><div class="n" id="st-affaires">0</div><div class="l">Affaires actives</div></div> 
+
+    <div class="stat"><div class="n" id="st-proces">0</div><div class="l">Proc&egrave;s &agrave; venir</div></div> 
+
+    <div class="stat"><div class="n" id="st-absents">0</div><div class="l">Membres absents aujourd'hui</div></div> 
+
+    <div class="stat"><div class="n" id="st-membres">0</div><div class="l">Membres du corps judiciaire</div></div> 
+
+  </div> 
+
+  <div id="dash"></div> 
+
+</section> 
+
+ 
+
+<section id="tab-lois" class="hidden"> 
+
+  <h2>Codes &amp; Lois</h2> 
+
+  <input class="search" id="searchLoi" placeholder="&#128269; Rechercher un article, une infraction, une peine..." oninput="renderLois()"> 
+
+  <div id="loisList"></div> 
+
+  <div class="card" style="margin-top:18px"><h3>&#10133; Publier un article</h3> 
+
+    <div class="row"><input id="nl-code" placeholder="Code (ex: Code p&eacute;nal)"><input id="nl-art" placeholder="Article (ex: Art. 12)"></div> 
+
+    <div class="row"><input id="nl-titre" placeholder="Titre de l'infraction / disposition"><input id="nl-peine" placeholder="Peine encourue"></div> 
+
+    <div class="row"><textarea id="nl-texte" rows="3" placeholder="Texte de l'article..."></textarea></div> 
+
+    <button class="add" onclick="addLoi()">Publier</button> 
+
+  </div> 
+
+</section> 
+
+ 
+
+<section id="tab-affaires" class="hidden"> 
+
+  <h2>Affaires en cours &mdash; qui est sur quoi</h2> 
+
+  <input class="search" id="searchAff" placeholder="&#128269; Rechercher par num&eacute;ro, nom, juge, avocat..." oninput="renderAffaires()"> 
+
+  <div class="row"><select id="filtrePhase" onchange="renderAffaires()"><option value="">Toutes les phases</option><option>Instruction</option><option>Enqu&ecirc;te</option><option>Audience</option><option>D&eacute;lib&eacute;r&eacute;</option><option>Ex&eacute;cution</option></select></div> 
+
+  <div id="affList"></div> 
+
+  <div class="card" style="margin-top:18px"><h3>&#10133; Ouvrir une affaire</h3> 
+
+    <div class="row"><input id="na-num" placeholder="Num&eacute;ro (ex: BL-2026-001)"><select id="na-type"><option>p&eacute;nal</option><option>civil</option><option>routier</option><option>commercial</option><option>autre</option></select><select id="na-phase"><option>Instruction</option><option>Enqu&ecirc;te</option><option>Audience</option><option>D&eacute;lib&eacute;r&eacute;</option><option>Ex&eacute;cution</option></select></div> 
+
+    <div class="row"><input id="na-titre" placeholder="Intitul&eacute; de l'affaire"></div> 
+
+    <div class="row"><input id="na-juge" placeholder="Juge en charge"><input id="na-parquet" placeholder="Procureur"><input id="na-defense" placeholder="Avocat de la d&eacute;fense"></div> 
+
+    <div class="row"><input id="na-date" type="date" title="Prochaine audience"><input id="na-lieu" placeholder="Lieu (ex: Palais de Justice, salle 2)"></div> 
+
+    <button class="add" onclick="addAffaire()">Ouvrir le dossier</button> 
+
+  </div> 
+
+</section> 
+
+ 
+
+<section id="tab-absences" class="hidden"> 
+
+  <h2>Registre des absences</h2> 
+
+  <div id="absList"></div> 
+
+  <div class="card" style="margin-top:18px"><h3>&#10133; D&eacute;clarer une absence</h3> 
+
+    <div class="row"><input id="ab-membre" placeholder="Membre"><input id="ab-debut" type="date" title="D&eacute;but"><input id="ab-fin" type="date" title="Fin"></div> 
+
+    <div class="row"><input id="ab-motif" placeholder="Motif"><input id="ab-rempl" placeholder="Remplacement assur&eacute; par"><select id="ab-statut"><option>Valid&eacute;e</option><option>En attente</option></select></div> 
+
+    <button class="add" onclick="addAbsence()">D&eacute;clarer</button> 
+
+  </div> 
+
+</section> 
+
+ 
+
+<section id="tab-agenda" class="hidden"> 
+
+  <h2>Agenda &mdash; proc&egrave;s, audiences &amp; &eacute;v&egrave;nements</h2> 
+
+  <div id="agList"></div> 
+
+  <div class="card" style="margin-top:18px"><h3>&#10133; Ajouter un &eacute;v&egrave;nement</h3> 
+
+    <div class="row"><input id="ev-titre" placeholder="Titre (ex: Proc&egrave;s BL-2026-001)"><select id="ev-type"><option>Proc&egrave;s</option><option>Audience</option><option>R&eacute;union</option><option>C&eacute;r&eacute;monie</option><option>Formation</option><option>Autre</option></select></div> 
+
+    <div class="row"><input id="ev-date" type="date"><input id="ev-heure" type="time"><input id="ev-lieu" placeholder="Lieu"></div> 
+
+    <div class="row"><input id="ev-desc" placeholder="Description / participants"></div> 
+
+    <button class="add" onclick="addEvent()">Ajouter</button> 
+
+  </div> 
+
+</section> 
+
+ 
+
+<section id="tab-annuaire" class="hidden"> 
+
+  <h2>Annuaire du corps judiciaire</h2> 
+
+  <table id="annTable"></table> 
+
+  <div class="card" style="margin-top:18px"><h3>&#10133; Ajouter un membre</h3> 
+
+    <div class="row"><input id="an-nom" placeholder="Nom RP"><input id="an-fonction" placeholder="Fonction"><select id="an-organ"><option>Si&egrave;ge</option><option>Parquet</option><option>Greffe</option><option>Barreau</option></select><input id="an-contact" placeholder="Contact Discord"></div> 
+
+    <button class="add" onclick="addMembre()">Ajouter</button> 
+
+  </div> 
+
+</section> 
+
+</main> 
+
+<footer>Portail Judiciaire &mdash; Bruxelles Life RP &bull; Simulation de roleplay &bull; Donn&eacute;es stock&eacute;es localement (localStorage)</footer> 
+
+<script> 
+
+var DEFAULT_DATA = { 
+
+ lois:[ 
+
+  {code:"Code - Dispositions g&eacute;n&eacute;rales",art:"Art. 1",titre:"Principes g&eacute;n&eacute;raux",peine:"-",texte:"Nul ne peut &ecirc;tre condamn&eacute; sans preuve &eacute;crite au dossier ou t&eacute;moignage recueilli en audience."}, 
+
+  {code:"Code - Dispositions g&eacute;n&eacute;rales",art:"Art. 2",titre:"Pr&eacute;somption d'innocence",peine:"-",texte:"Toute personne poursuivie est pr&eacute;sum&eacute;e innocente jusqu'&agrave; condamnation d&eacute;finitive."}, 
+
+  {code:"Code - Dispositions g&eacute;n&eacute;rales",art:"Art. 3",titre:"Comp&eacute;tence territoriale",peine:"-",texte:"Le Palais de Justice de Bruxelles est comp&eacute;tent pour tous les faits survenus sur le territoire de Bruxelles."}, 
+
+  {code:"Code p&eacute;nal",art:"Art. 10",titre:"Meurtre",peine:"60 &agrave; 120 mois + 30 000 $",texte:"Toute personne qui donne volontairement la mort &agrave; autrui est punie de la r&eacute;clusion."}, 
+
+  {code:"Code p&eacute;nal",art:"Art. 11",titre:"Tentative de meurtre",peine:"40 &agrave; 80 mois + 20 000 $",texte:"La tentative de meurtre est punie comme le meurtre lui-m&ecirc;me."}, 
+
+  {code:"Code p&eacute;nal",art:"Art. 20",titre:"Vol simple",peine:"10 &agrave; 30 mois + restitution",texte:"Soustraction frauduleuse d'un bien mobiliers appartenant &agrave; autrui."}, 
+
+  {code:"Code p&eacute;nal",art:"Art. 21",titre:"Vol avec violence (braquage)",peine:"35 &agrave; 70 mois + 25 000 $",texte:"Vol commis avec violence, arme ou menace."}, 
+
+  {code:"Code p&eacute;nal",art:"Art. 30",titre:"D&eacute;tention ill&eacute;gale d'arme de cat&eacute;gorie A",peine:"25 &agrave; 50 mois + confiscation",texte:"Port ou d&eacute;tention d'une arme non d&eacute;clar&eacute;e."}, 
+
+  {code:"Code p&eacute;nal",art:"Art. 40",titre:"Trafic de stup&eacute;fiants",peine:"30 &agrave; 60 mois + 20 000 $",texte:"Toute vente, transport ou production de stup&eacute;fiants."}, 
+
+  {code:"Code p&eacute;nal",art:"Art. 50",titre:"Corruption d'agent public",peine:"20 &agrave; 40 mois + 15 000 $",texte:"Offrir ou accepter un avantage pour contourner la loi."}, 
+
+  {code:"Code p&eacute;nal",art:"Art. 60",titre:"Outrage &agrave; magistrat",peine:"5 &agrave; 15 mois",texte:"Irr&eacute;v&eacute;rence ou insulte envers un membre du corps judiciaire dans l'exercice de ses fonctions."}, 
+
+  {code:"Code de proc&eacute;dure p&eacute;nale",art:"Art. 5",titre:"Garde &agrave; vue",peine:"-",texte:"La garde &agrave; vue ne peut exc&eacute;der 48 heures sans validation du parquet."}, 
+
+  {code:"Code de proc&eacute;dure p&eacute;nale",art:"Art. 15",titre:"Droits de la d&eacute;fense",peine:"-",texte:"Toute personne poursuivie a droit &agrave; un avocat, commis d'office si n&eacute;cessaire."}, 
+
+  {code:"Code de proc&eacute;dure p&eacute;nale",art:"Art. 25",titre:"Prescription",peine:"-",texte:"Les poursuites se prescrivent par 3 mois &agrave; compter des faits, sauf crime."}, 
+
+  {code:"Code civil et commercial",art:"Art. 100",titre:"Obligation contractuelle",peine:"-",texte:"Tout contrat sign&eacute; entre deux parties est opposable devant le tribunal civil."}, 
+
+  {code:"Code civil et commercial",art:"Art. 110",titre:"Faillite frauduleuse",peine:"20 &agrave; 40 mois",texte:"Dissimulation d'actifs lors d'une proc&eacute;dure de faillite."}, 
+
+  {code:"Code de la route",art:"Art. 200",titre:"Conduite en &eacute;tat d'ivresse",peine:"5 &agrave; 15 mois + retrait de permis",texte:"Conduite avec un taux d'alcool sup&eacute;rieur &agrave; 0,5 g/l."}, 
+
+  {code:"Code de la route",art:"Art. 210",titre:"D&eacute;lit de fuite",peine:"10 &agrave; 25 mois",texte:"Non-arr&ecirc;t apr&egrave;s un accident."}, 
+
+  {code:"Code judiciaire",art:"Art. 1",titre:"Organisation du si&egrave;ge",peine:"-",texte:"Le corps judiciaire comprend le si&egrave;ge, le parquet, le greffe et le barreau."} 
+
+ ], 
+
+ affaires:[ 
+
+  {num:"BL-2026-001",type:"p&eacute;nal",phase:"Audience",titre:"Braquage de la bijouterie du Centre",juge:"Juge A. Moreau",parquet:"Proc. L. Dubois",defense:"Me K. Verlinden",date:"",lieu:"Palais de Justice, salle 1"}, 
+
+  {num:"BL-2026-002",type:"routier",phase:"Instruction",titre:"Accident mortel sur l'E429",juge:"Juge S. Lemaire",parquet:"Proc. M. Caron",defense:"Me T. Renard",date:"",lieu:"Palais de Justice, salle 2"} 
+
+ ], 
+
+ absences:[ 
+
+  {membre:"Greffier P. Lambert",debut:"2026-10-10",fin:"2026-10-13",motif:"Vacances RP",rempl:"Greffier adjoint J. Peeters",statut:"Valid&eacute;e"} 
+
+ ], 
+
+ evenements:[ 
+
+  {titre:"Proc&egrave;s BL-2026-001 - braquage bijouterie",type:"Proc&egrave;s",date:"2026-10-12",heure:"20:00",lieu:"Palais de Justice, salle 1",desc:"Audience p&eacute;nale, pr&eacute;sence du juge Moreau"}, 
+
+  {titre:"R&eacute;union hebdomadaire du corps judiciaire",type:"R&eacute;union",date:"2026-10-15",heure:"21:00",lieu:"Bureau du juge en chef",desc:"Point sur les dossiers en cours"} 
+
+ ], 
+
+ membres:[ 
+
+  {nom:"A. Moreau",fonction:"Juge en chef",organ:"Si&egrave;ge",contact:"moreau_rp"}, 
+
+  {nom:"S. Lemaire",fonction:"Juge d'instruction",organ:"Si&egrave;ge",contact:"lemaire_rp"}, 
+
+  {nom:"L. Dubois",fonction:"Procureur du Roi",organ:"Parquet",contact:"dubois_rp"}, 
+
+  {nom:"M. Caron",fonction:"Substitut du procureur",organ:"Parquet",contact:"caron_rp"}, 
+
+  {nom:"P. Lambert",fonction:"Greffier en chef",organ:"Greffe",contact:"lambert_rp"}, 
+
+  {nom:"K. Verlinden",fonction:"Avocat (barreau)",organ:"Barreau",contact:"verlinden_rp"} 
+
+ ] 
+
+}; 
+
+var D; 
+
+function load(){try{D=JSON.parse(localStorage.getItem('blrp_jud'))||null}catch(e){D=null} 
+
+ if(!D){D=JSON.parse(JSON.stringify(DEFAULT_DATA));save()}} 
+
+function save(){localStorage.setItem('blrp_jud',JSON.stringify(D))} 
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')} 
+
+function today(){return new Date().toISOString().slice(0,10)} 
+
+ 
+
+document.querySelectorAll('#nav button').forEach(function(b){ 
+
+ b.onclick=function(){document.querySelectorAll('#nav button').forEach(function(x){x.classList.remove('active')}); 
+
+ b.classList.add('active'); 
+
+ document.querySelectorAll('main section').forEach(function(s){s.classList.add('hidden')}); 
+
+ document.getElementById('tab-'+b.dataset.tab).classList.remove('hidden'); 
+
+ if(b.dataset.tab==='accueil')renderDash();}}); 
+
+ 
+
+function renderDash(){ 
+
+ document.getElementById('st-affaires').textContent=D.affaires.length; 
+
+ document.getElementById('st-membres').textContent=D.membres.length; 
+
+ var t=today(); 
+
+ document.getElementById('st-absents').textContent=D.absences.filter(function(a){return a.debut<=t&&a.fin>=t}).length; 
+
+ document.getElementById('st-proces').textContent=D.evenements.filter(function(e){return e.type==='Proc\u00e8s'&&e.date>=t}).length; 
+
+ var h='<div class="card"><h3>&#128197; Prochaines &eacute;ch&eacute;ances</h3>'; 
+
+ var ev=D.evenements.filter(function(e){return e.date>=t}).sort(function(a,b){return a.date.localeCompare(b.date)}).slice(0,4); 
+
+ if(!ev.length)h+='<p class="meta">Aucun &eacute;v&eacute;nement &agrave; venir.</p>'; 
+
+ ev.forEach(function(e){h+='<p><b>'+esc(e.date)+'</b> '+esc(e.heure)+' &mdash; '+esc(e.titre)+' <span class="meta">('+esc(e.type)+', '+esc(e.lieu)+')</span></p>'}); 
+
+ h+='</div><div class="card"><h3>&#128683; Absences en cours</h3>'; 
+
+ var ab=D.absences.filter(function(a){return a.fin>=t}); 
+
+ if(!ab.length)h+='<p class="meta">Tout le monde est pr&eacute;sent.</p>'; 
+
+ ab.forEach(function(a){h+='<p><b>'+esc(a.membre)+'</b> du '+esc(a.debut)+' au '+esc(a.fin)+' &mdash; remplac&eacute; par '+esc(a.rempl||'personne')+'</p>'}); 
+
+ h+='</div>';document.getElementById('dash').innerHTML=h} 
+
+ 
+
+function renderLois(){ 
+
+ var q=(document.getElementById('searchLoi').value||'').toLowerCase(); 
+
+ var h='';var last=''; 
+
+ D.lois.forEach(function(l,i){ 
+
+  var blob=(l.code+l.art+l.titre+l.peine+l.texte).toLowerCase(); 
+
+  if(q&&blob.indexOf(q)<0)return; 
+
+  if(l.code!==last){if(last)h+='</div>';h+='<h3 style="color:var(--navy);margin:14px 0 8px">'+esc(l.code)+'</h3><div>';last=l.code} 
+
+  h+='<div class="article"><button class="del" onclick="delItem(\'lois\','+i+')">Supprimer</button><b>'+esc(l.art)+'</b> &mdash; '+esc(l.titre)+' <span class="meta">| Peine : '+esc(l.peine)+'</span><p>'+esc(l.texte)+'</p></div>'}); 
+
+ if(last)h+='</div>'; 
+
+ document.getElementById('loisList').innerHTML=h||'<p class="meta">Aucun r&eacute;sultat.</p>'} 
+
+ 
+
+function renderAffaires(){ 
+
+ var q=(document.getElementById('searchAff').value||'').toLowerCase(); 
+
+ var f=document.getElementById('filtrePhase').value; 
+
+ var h=''; 
+
+ D.affaires.forEach(function(a,i){ 
+
+  if(f&&a.phase!==f)return; 
+
+  var blob=(a.num+a.titre+a.juge+a.parquet+a.defense).toLowerCase(); 
+
+  if(q&&blob.indexOf(q)<0)return; 
+
+  h+='<div class="card"><button class="del" onclick="delItem(\'affaires\','+i+')">Cl&ocirc;turer</button><h3><span class="badge b-'+esc(a.type)+'">'+esc(a.type)+'</span>'+esc(a.num)+' &mdash; '+esc(a.titre)+'</h3><span class="phase">'+esc(a.phase)+'</span><p class="meta">&#9878;&#65039; Juge : '+esc(a.juge)+' &bull; &#9878; Parquet : '+esc(a.parquet)+' &bull; &#9878; D&eacute;fense : '+esc(a.defense)+'</p>'+(a.date?'<p class="meta">&#128197; Prochaine audience : '+esc(a.date)+' &agrave; '+esc(a.lieu)+'</p>':'')+'</div>'}); 
+
+ document.getElementById('affList').innerHTML=h||'<p class="meta">Aucune affaire.</p>'} 
+
+ 
+
+function renderAbsences(){ 
+
+ var t=today();var h='<table><tr><th>Membre</th><th>Du</th><th>Au</th><th>Motif</th><th>Remplacement</th><th>Statut</th><th></th></tr>'; 
+
+ D.absences.forEach(function(a,i){ 
+
+  var cur=(a.debut<=t&&a.fin>=t); 
+
+  h+='<tr'+(cur?' class="today"':'')+'><td><b>'+esc(a.membre)+'</b></td><td>'+esc(a.debut)+'</td><td>'+esc(a.fin)+'</td><td>'+esc(a.motif)+'</td><td>'+esc(a.rempl||'&agrave; pourvoir')+'</td><td>'+esc(a.statut)+'</td><td><button class="del" onclick="delItem(\'absences\','+i+')">Supprimer</button></td></tr>'}); 
+
+ h+='</table>';document.getElementById('absList').innerHTML=h} 
+
+ 
+
+function renderAgenda(){ 
+
+ var t=today();var h=''; 
+
+ var ev=D.evenements.slice().sort(function(a,b){return a.date.localeCompare(b.date)}); 
+
+ ev.forEach(function(e,i){ 
+
+  var past=e.date<t; 
+
+  h+='<div class="card'+(past?' past':'')+'"><button class="del" onclick="delItem(\'evenements\','+i+')">Supprimer</button><h3>'+esc(e.titre)+'</h3><span class="badge b-autre">'+esc(e.type)+'</span><p class="meta">&#128197; '+esc(e.date)+' &agrave; '+esc(e.heure)+' &bull; '+esc(e.lieu)+'</p>'+(e.desc?'<p class="meta">'+esc(e.desc)+'</p>':'')+'</div>'}); 
+
+ document.getElementById('agList').innerHTML=h||'<p class="meta">Aucun &eacute;v&eacute;nement.</p>'} 
+
+ 
+
+function renderAnnuaire(){ 
+
+ var h='<table><tr><th>Nom</th><th>Fonction</th><th>Organisme</th><th>Contact Discord</th><th></th></tr>'; 
+
+ D.membres.forEach(function(m,i){h+='<tr><td><b>'+esc(m.nom)+'</b></td><td>'+esc(m.fonction)+'</td><td>'+esc(m.organ)+'</td><td>'+esc(m.contact)+'</td><td><button class="del" onclick="delItem(\'membres\','+i+')">Supprimer</button></td></tr>'}); 
+
+ h+='</table>';document.getElementById('annTable').innerHTML=h} 
+
+ 
+
+function delItem(k,i){if(!confirm('Confirmer la suppression ?'))return;D[k].splice(i,1);save();renderAll()} 
+
+function addLoi(){var c=document.getElementById('nl-code').value.trim();if(!c)return alert('Indique le code.'); 
+
+ D.lois.push({code:c,art:document.getElementById('nl-art').value.trim()||'Art. ?',titre:document.getElementById('nl-titre').value.trim(),peine:document.getElementById('nl-peine').value.trim(),texte:document.getElementById('nl-texte').value.trim()});save();renderAll()} 
+
+function addAffaire(){var n=document.getElementById('na-num').value.trim();if(!n)return alert('Indique le num&eacute;ro de dossier.'); 
+
+ D.affaires.push({num:n,type:document.getElementById('na-type').value,phase:document.getElementById('na-phase').value,titre:document.getElementById('na-titre').value.trim(),juge:document.getElementById('na-juge').value.trim(),parquet:document.getElementById('na-parquet').value.trim(),defense:document.getElementById('na-defense').value.trim(),date:document.getElementById('na-date').value,lieu:document.getElementById('na-lieu').value.trim()});save();renderAll()} 
+
+function addAbsence(){var m=document.getElementById('ab-membre').value.trim();if(!m)return alert('Indique le membre.'); 
+
+ D.absences.push({membre:m,debut:document.getElementById('ab-debut').value,fin:document.getElementById('ab-fin').value,motif:document.getElementById('ab-motif').value.trim(),rempl:document.getElementById('ab-rempl').value.trim(),statut:document.getElementById('ab-statut').value});save();renderAll()} 
+
+function addEvent(){var t=document.getElementById('ev-titre').value.trim();if(!t)return alert('Indique le titre.'); 
+
+ D.evenements.push({titre:t,type:document.getElementById('ev-type').value,date:document.getElementById('ev-date').value,heure:document.getElementById('ev-heure').value,lieu:document.getElementById('ev-lieu').value.trim(),desc:document.getElementById('ev-desc').value.trim()});save();renderAll()} 
+
+function addMembre(){var n=document.getElementById('an-nom').value.trim();if(!n)return alert('Indique le nom.'); 
+
+ D.membres.push({nom:n,fonction:document.getElementById('an-fonction').value.trim(),organ:document.getElementById('an-organ').value,contact:document.getElementById('an-contact').value.trim()});save();renderAll()} 
+
+ 
+
+function exportJSON(){var blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='portail_judiciaire_blrp.json';a.click()} 
+
+function importJSON(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader(); 
+
+ r.onload=function(){try{D=JSON.parse(r.result);save();renderAll();alert('Import r&eacute;ussi !')}catch(e){alert('Fichier invalide.')}};r.readAsText(f)} 
+
+ 
+
+function renderAll(){renderDash();renderLois();renderAffaires();renderAbsences();renderAgenda();renderAnnuaire()} 
+
+load();renderAll(); 
+
+</script> 
+
+</body> 
+
+</html> 
